@@ -7,6 +7,7 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
   var y = 0;
   move.setPositions();
   var world = {};
+  var scale = 30.0;
   var box = new Box({intervalRate:60, adaptive:false, width:config.width, height:config.height, scale:30.0, gravityY:9.8});
   var groundId = 'ground';
   var ground = new Rectangle({
@@ -22,11 +23,12 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
   for (var i=0; i<numberOfCheckers; i++){
     var checkerId = "checker" + i;
     this.checkerIds.push(checkerId);
+    console.log(move.columnPositions[0], config.startYPosition, config.radius);
     var checker = new Circle({
       id: checkerId,
-      x: move.columnPositions[0] * this.scale,
-      y: config.startYPosition * this.scale,
-      radius: config.radius * this.scale,
+      x: move.columnPositions[0] / 30.0,
+      y: config.startYPosition / 30.0,
+      radius: config.radius / 30.0,
       staticBody: false,
       density: 0.5,  // a little lighter
       restitution: 0.8, // a little bouncier
@@ -35,7 +37,6 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
     box.addBody(checker);
     world[checkerId] = checker;
   }
-
 
   var resourceManager = new ResourceManager();
   var backgroundImage = resourceManager.loadImage('connect4/images/board.png');
@@ -55,14 +56,14 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
   var game = new GameCore({
     canvasId: 'canvas',
     update: function(millis){
-      box.update(); 
+     /* box.update(); 
       var bodiesState = box.getState();
       for (var id in bodiesState) {
         var entity = world[id];
         if (entity && !entity.staticBody){
           entity.update(bodiesState[id]);
         }
-      }
+      }*/
     },
     draw: function(context){
       context.drawImage(backgroundImage, 0, 70, 790, 560);
