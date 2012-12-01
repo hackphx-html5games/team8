@@ -1,5 +1,5 @@
 //load the AMD modules we need
-require(['frozen/GameCore'], function(GameCore){
+require(['frozen/GameCore', 'frozen/ResourceManager', 'connect4/board'], function(GameCore, ResourceManager, board){
 
   // game state
   var x = 0;
@@ -9,12 +9,10 @@ require(['frozen/GameCore'], function(GameCore){
   var game = new GameCore({
     canvasId: 'canvas',
     update: function(millis){
-      x += 1;
-      y += 1;
+      // 
     },
     draw: function(context){
-      context.clearRect(0, 0, this.width, this.height);
-      context.fillRect(x, y, 50, 50);
+      board.init(context);
     }
   });
 
