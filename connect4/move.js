@@ -1,5 +1,5 @@
-define(["./rules", "./config", 'frozen/box2d/Box', 'frozen/box2d/RectangleEntity', 'frozen/box2d/CircleEntity']
-, function(rules, config, Box, Rectangle, Circle){
+define(["./rules", "./config", 'frozen/box2d/RectangleEntity', 'frozen/box2d/CircleEntity']
+, function(rules, config, Rectangle, Circle){
 	return {
 		checkerId: 0,
 		columnPositions: [],
@@ -13,8 +13,11 @@ define(["./rules", "./config", 'frozen/box2d/Box', 'frozen/box2d/RectangleEntity
 			}
 		},
 
-		init: function(context){
+		init: function(context, box, world, scale){
 			this.context = context;
+			this.box = box;
+			this.world = world;
+			this.scale = scale;
 		},
 
 		play: function(column, row, color){
@@ -22,13 +25,6 @@ define(["./rules", "./config", 'frozen/box2d/Box', 'frozen/box2d/RectangleEntity
 			var id = this.checkerId;
 			this.checkerId++; // increment for next usage
 			if(this.test(column, row, color)){
-				this.context.beginPath();
-				this.context.arc(this.columnPositions[column], config.startYPosition, 38, 0, Math.PI*2, true); 
-				this.context.closePath();
-				this.context.fillStyle = color;
-				this.context.fill();
-/*
-
 				var checker = new Circle({
 					id: id,
 					x: this.columnPositions[column],
@@ -37,18 +33,18 @@ define(["./rules", "./config", 'frozen/box2d/Box', 'frozen/box2d/RectangleEntity
 					staticBody: false,
 					density: 0.5,  // al little lighter
 					restitution: 0.8, // a little bouncier
-					draw: function(context, scale){  //we also want to render the yarn with an image
-						ctx.save();
-						ctx.translate(this.x * scale, this.y * scale);
-						ctx.fillStyle = this.color;
-						ctx.drawImage("", (this.x-this.radius) * scale, (this.y-this.radius) * scale);
-						ctx.restore();
+					draw: function(context){  //we also want to render the yarn with an image
+						this.context.save();
+						this.context.translate(this.x * this.scale, this.y * this.scale);
+						this.context.beginPath();
+						this.context.closePath();
+						this.context.fillStyle = color;
+						this.context.fill();
+						this.context.restore();
 					}
   				});
-				box.addBody(yarn);
-				world[geomId] = yarn;
-				});
-*/				
+				this.box.addBody(checker);
+				this.world[id] = checker;
 			}
 		},
 

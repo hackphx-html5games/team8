@@ -2,11 +2,15 @@
 define(["./config", 'frozen/ResourceManager'], function(config, ResourceManager){
   return {
     columns: null,
-    init: function(context){
+    init: function(context, box, world, scale){
       // draw canvas or use background image
       var resourceManager = new ResourceManager();
       var backgroundImage = resourceManager.loadImage('connect4/images/board.png');
       context.drawImage(backgroundImage, 0, 70, 790, 560);
+      this.box = box;
+      this.context = context;
+      this.world = world;
+      this.scale = scale;
     },
 
     addColumns: function(){
