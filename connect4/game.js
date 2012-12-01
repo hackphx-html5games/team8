@@ -1,5 +1,5 @@
 //load the AMD modules we need
-require(['frozen/GameCore', 'frozen/ResourceManager', 'connect4/board'], function(GameCore, ResourceManager, board){
+require(['frozen/GameCore', 'frozen/ResourceManager', 'connect4/board', 'connect4/move'], function(GameCore, ResourceManager, board, move){
 
   // game state
   var x = 0;
@@ -13,6 +13,8 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'connect4/board'], functio
     },
     draw: function(context){
       board.init(context);
+      //move.init(context);
+      //move.play(0);
     }
   });
 
