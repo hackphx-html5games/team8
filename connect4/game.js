@@ -1,11 +1,11 @@
 //load the AMD modules we need
-require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'frozen/box2d/RectangleEntity', 'connect4/board', 'connect4/move', 'connect4/config']
-, function(GameCore, ResourceManager, Box, Rectangle, board, move, config){
+require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'frozen/box2d/RectangleEntity', 'frozen/box2d/CircleEntity', 'connect4/board', 'connect4/move', 'connect4/config']
+, function(GameCore, ResourceManager, Box, Rectangle, Circle, board, move, config){
 
   // game state
   var x = 0;
   var y = 0;
-  move.setPositions(7, 6);
+  move.setPositions();
   var world = {};
   var box = new Box({intervalRate:60, adaptive:false, width:config.width, height:config.height, scale:30.0, gravityY:9.8});
   var groundId = 'ground';
@@ -17,6 +17,39 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
   });
   box.addBody(ground); //add the shape to the box
   world[groundId] = ground; //keep a reference to the shape for fast lookup
+  var numberOfCheckers = config.numberOfColumns * config.numberOfRows;  
+  this.checkerIds = [];
+  for (var i=0; i<numberOfCheckers; i++){
+    var checkerId = "checker" + i;
+    this.checkerIds.push(checkerId);
+    var checker = new Circle({
+      id: checkerId,
+      x: move.columnPositions[0] * this.scale,
+      y: config.startYPosition * this.scale,
+      radius: config.radius * this.scale,
+      staticBody: false,
+      density: 0.5,  // a little lighter
+      restitution: 0.8, // a little bouncier
+      fillStyle: "#ff0000"
+    });
+    box.addBody(checker);
+    world[checkerId] = checker;
+  }
+
+
+  var resourceManager = new ResourceManager();
+  var backgroundImage = resourceManager.loadImage('connect4/images/board.png');
+
+  board.init(document.getElementById("canvas"), box, world, 30.0);
+  move.init(document.getElementById("canvas"), box, world, 30.0);
+  /*move.play(0, 0, "#ff0000");
+  move.play(1, 0, "#0000ff");
+  move.play(2, 1, "#ff0000");
+  move.play(3, 2, "#0000ff");
+  move.play(4, 3, "#ff0000");
+  move.play(5, 4, "#0000ff");
+  move.play(6, 5, "#ff0000");*/
+
 
   //setup a GameCore instance
   var game = new GameCore({
@@ -32,15 +65,10 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
       }
     },
     draw: function(context){
-      board.init(context, box, world, 30.0);
-      move.init(context, box, world, 30.0);
-      move.play(0, 0, "#ff0000");
-      move.play(1, 0, "#0000ff");
-      move.play(2, 1, "#ff0000");
-      move.play(3, 2, "#0000ff");
-      move.play(4, 3, "#ff0000");
-      move.play(5, 4, "#0000ff");
-      move.play(6, 5, "#ff0000");
+      context.drawImage(backgroundImage, 0, 70, 790, 560);
+      for (var x in world){
+        world[x].draw(context, 30.0);
+      }
     }
   });
 
