@@ -4,17 +4,19 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'connect4/board', 'connect
   // game state
   var x = 0;
   var y = 0;
+  move.setPositions(7);
 
   //setup a GameCore instance
   var game = new GameCore({
     canvasId: 'canvas',
-    update: function(millis){
+    //update: function(millis){
       // 
-    },
+    //},
     draw: function(context){
       board.init(context);
-      //move.init(context);
-      //move.play(0);
+      move.init(context);
+      move.play(0, "#ff0000");
+      move.play(1, "#0000ff");
     }
   });
 
