@@ -1,0 +1,11 @@
+define({
+	width: 800,
+	height: 800,
+	initialXPosition: 95,
+	xIncrement: 100,
+	initialYPosition: 636,
+	yIncrement: -100,
+	startYPosition: 45,
+	numberOfColumns: 7,// perhaps make this parameterizable?
+	numberOfRows: 6, // perhaps make this parameterizable?
+});
