@@ -29,6 +29,8 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
 
   var resourceManager = new ResourceManager();
   var backgroundImage = resourceManager.loadImage('connect4/images/board.png');
+  var yipee = resourceManager.loadSound('connect4/sounds/yipee.wav');
+
 
   board.init(document.getElementById("canvas"), box, world, 30.0);
   move.init(document.getElementById("canvas"), box, world, 30.0);
@@ -45,6 +47,7 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
     };
     if(test == config.numberOfRows){
       evt.target.style.visibility = "hidden";
+      resourceManager.playSound(yipee);
     }
     var i = this.checkerIds.length;
     var checkerId = "checker" + i;
