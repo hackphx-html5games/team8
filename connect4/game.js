@@ -38,6 +38,14 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
   };
 
   on(query(".play"), ".start:click", lang.hitch(this, function(evt){
+    console.log(evt.target.id);
+    var test = board.setColumn(evt.target.id);
+    if(!test){
+      return false;
+    };
+    if(test == config.numberOfRows){
+      evt.target.style.visibility = "hidden";
+    }
     var i = this.checkerIds.length;
     var checkerId = "checker" + i;
     var color = this.colors[i%2];

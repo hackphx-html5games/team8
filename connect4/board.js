@@ -14,7 +14,8 @@ define(["./config", "./move"], function(config, move){
       }
     },
 
-    setColumn: function(columnIndex){
+    setColumn: function(columnId){
+      var columnIndex = columnId.charAt( columnId.length-1 );
       if( (columnIndex < 0) || (columnIndex > (config.numberOfColumns - 1)) ){
         console.log("invalid column");
         return false;
@@ -23,8 +24,8 @@ define(["./config", "./move"], function(config, move){
         console.log("column full");
         return false;
       }
-      this.columns[columnIndex] = this.columns[columnIndex]++;
-      return true;
+      this.columns[columnIndex] = this.columns[columnIndex]+1;
+      return this.columns[columnIndex];
     },
 
     reset: function(){
