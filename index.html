@@ -39,13 +39,13 @@
         async: 1,
         baseUrl: "/",
         packages: [
-          "dojo",
+          { name: "dojo", location: "//ajax.googleapis.com/ajax/libs/dojo/1.8.1/dojo/"},
           { name: "frozen", location: "frozen/src"},
           "connect4"
         ]
       };
     </script>
-    <script src="dojo/dojo.js"></script>
+    <script src="https://raw.github.com/iceddev/frozen/js2.0/dist/frozen.js"></script>
     <script>
     require(["frozen/GameCore","connect4/game"], function(){
 
