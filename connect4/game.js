@@ -20,22 +20,12 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
   world[groundId] = ground; //keep a reference to the shape for fast lookup
   var numberOfCheckers = config.numberOfColumns * config.numberOfRows;  
   this.checkerIds = [];
+  var colors = ["#0000ff","#ff0000"];
   for (var i=0; i<numberOfCheckers; i++){
     var checkerId = "checker" + i;
     this.checkerIds.push(checkerId);
     console.log(move.columnPositions[0], config.startYPosition, config.radius);
-    var checker = new Circle({
-      id: checkerId,
-      x: move.columnPositions[0] / 30.0,
-      y: config.startYPosition / 30.0,
-      radius: config.radius / 30.0,
-      staticBody: false,
-      density: 0.5,  // a little lighter
-      restitution: 0.8, // a little bouncier
-      fillStyle: "#ff0000"
-    });
-    box.addBody(checker);
-    world[checkerId] = checker;
+    createChecker(colors[i%2], checkerId, i);
   }
 
   var resourceManager = new ResourceManager();
@@ -73,6 +63,34 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
     }
   });
 
+  function createChecker(color, checkerId, i){
+    var checker = new Circle({
+      id: checkerId,
+      x: move.columnPositions[i % config.numberOfColumns] / 30.0,
+      y: (config.initialYPosition + (config.yIncrement * parseInt(i % config.numberOfRows)) ) / 30.0,
+      radius: config.radius / 30.0,
+      staticBody: false,
+      density: 0.5,  // a little lighter
+      restitution: 0.8, // a little bouncier
+      draw: function(ctx, scale){
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = 'none';
+        ctx.beginPath();
+        ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.stroke();
+        //this.inherited(arguments);
+      }
+    });
+    box.addBody(checker);
+    world[checkerId] = checker;
+
+  }
 
   //if you want to take a look at the game object in dev tools
   console.log(game);
