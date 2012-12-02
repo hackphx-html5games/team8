@@ -1,6 +1,7 @@
 //load the AMD modules we need
-require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'frozen/box2d/RectangleEntity', 'frozen/box2d/CircleEntity', 'connect4/board', 'connect4/move', 'connect4/config']
-, function(GameCore, ResourceManager, Box, Rectangle, Circle, board, move, config){
+require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'frozen/box2d/RectangleEntity', 
+  'frozen/box2d/CircleEntity', 'connect4/board', 'connect4/move', 'connect4/config', "dojo/on", "dojo/query", "dojo/_base/lang"]
+, function(GameCore, ResourceManager, Box, Rectangle, Circle, board, move, config, on, query, lang){
 
   // game state
   var x = 0;
@@ -13,7 +14,7 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
   var ground = new Rectangle({
     id: groundId,
     x: config.width/2 / 30.0,
-    y: config.height / 30.0,
+    y: (config.height -30) / 30.0,
     halfHeight: 50 / 30.0,
     halfWidth: config.width/2/30.0, 
     staticBody: true
@@ -33,8 +34,43 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
   move.init(document.getElementById("canvas"), box, world, 30.0);
 
   for (var i=0; i<numberOfCheckers; i++){
-    createChecker();
+    //createChecker();
   };
+
+  on(query(".play"), ".start:click", lang.hitch(this, function(evt){
+    var i = this.checkerIds.length;
+    var checkerId = "checker" + i;
+    var color = this.colors[i%2];
+    this.checkerIds.push(checkerId);
+    
+    var checker = new Circle({
+      id: checkerId,
+      //x: move.columnPositions[i % config.numberOfColumns] / 30.0,
+      x: evt.x / 30.0,
+      //y: (config.initialYPosition + (config.yIncrement * parseInt(i % config.numberOfRows)) ) / 30.0,
+      y: 0 / 30.0,
+      radius: config.radius / 30.0,
+      staticBody: false,
+      density: 3.5,  // a little lighter
+      restitution: 0.4, // a little bouncier
+      draw: function(ctx, scale){
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = 'none';
+        ctx.beginPath();
+        ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.stroke();
+        this.inherited(arguments);
+      }
+    });
+    box.addBody(checker);
+    world[checkerId] = checker;
+  }));
 
   for (var i=0; i<config.numberOfColumns + 1; i++){
     createRail(i);
@@ -65,6 +101,7 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
       }
     },
     draw: function(context){
+      context.clearRect(0,0,config.width, config.height);
       context.drawImage(backgroundImage, 0, 70, 790, 560);
       for (var x in world){
         if(/checker/.test(world[x].id)){
@@ -73,42 +110,6 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
       }
     }
   });
-
-  function createChecker(){
-    var i = this.checkerIds.length;
-    var checkerId = "checker" + i;
-    var color = this.colors[i%2];
-    this.checkerIds.push(checkerId);
-    
-    var checker = new Circle({
-      id: checkerId,
-      x: move.columnPositions[i % config.numberOfColumns] / 30.0,
-      //x: -200 / 30.0,
-      //y: (config.initialYPosition + (config.yIncrement * parseInt(i % config.numberOfRows)) ) / 30.0,
-      y: -200 / 30.0,
-      radius: config.radius / 30.0,
-      staticBody: false,
-      density: 1.5,  // a little lighter
-      restitution: 0.8, // a little bouncier
-      draw: function(ctx, scale){
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.strokeStyle = 'none';
-        ctx.beginPath();
-        ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.stroke();
-        this.inherited(arguments);
-      }
-    });
-    box.addBody(checker);
-    world[checkerId] = checker;
-
-  }
 
   function createRail(index){
     var railId = 'rail' + index;
@@ -129,4 +130,5 @@ require(['frozen/GameCore', 'frozen/ResourceManager', 'frozen/box2d/Box', 'froze
 
   //launch the game!
   game.run();
+  board.addColumns();
 });

@@ -1,9 +1,10 @@
 //load the AMD modules we need
-define(["./config"], function(config){
+define(["./config", "./move"], function(config, move){
   return {
     columns: null,
-    init: function(){
+    init: function(context, box, world, scale){
       // 
+      this.context = context.getContext('2d');
     },
 
     addColumns: function(){
