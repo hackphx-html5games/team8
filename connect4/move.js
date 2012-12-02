@@ -19,7 +19,9 @@ define(["./rules", "./config", 'frozen/box2d/RectangleEntity', 'frozen/box2d/Cir
 			this.scale = scale;
 		},
 
-		play: function(column, row, color){
+		play: function(column, row, color, id){
+			this.world["checker" + id].x = this.columnPositions[config.initialXPosition] / 30.0;
+			this.world["checker" + id].y = this.rowPositions[config.initialYPosition] / 30.0;
 			// attempt to take a turn
 		},
 

@@ -1,6 +1,6 @@
 define({
 	width: 800,
-	height: 800,
+	height: 660,
 	radius: 38,
 	initialXPosition: 95,
 	xIncrement: 100,
